@@ -1,4 +1,4 @@
-import { PrismaClient } from './../node_modules/.prisma/client/index.d';
+import { PrismaClient } from '.prisma/client';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';

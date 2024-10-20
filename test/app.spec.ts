@@ -15,10 +15,20 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
-});
+describe("POST /api/users", () => {
+  it("should be rejected with 400 ", async () => {
+    const response = await request(app.getHttpServer())
+      .post("/api/users")
+      .send({
+        username: "",
+        password: "",
+        name: "",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toBeDefined();
+    
+
+  })
+})
+})

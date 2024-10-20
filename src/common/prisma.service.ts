@@ -35,8 +35,6 @@ export class PrismaService
   }
   async onModuleInit() {
     await this.$connect();
-    this.logger.info('Database connected');
-
     this.$on('query', (e) => {
       this.logger.info(e);
     });

@@ -9,9 +9,8 @@ export class UserValidation {
         password: z.string().min(6).max(100),
     });
     static userResponse = z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string().optional(),
         username: z.string(),
-        email: z.string().email(),
     });
 }

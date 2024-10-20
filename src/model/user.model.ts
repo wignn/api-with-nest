@@ -6,8 +6,7 @@ export class RegisterUserRequest {
 }
 
 export class UserResponse {
-    id: number;
+    id: string;
     name?: string;
     username: string;
-    email: string;
 }

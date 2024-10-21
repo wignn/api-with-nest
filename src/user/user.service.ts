@@ -1,3 +1,4 @@
+import {JwtService} from '@nestjs/jwt'
 import { ValidationService } from './../common/validate.service';
 import { LoginUserRequest, UserResponse } from './../model/user.model';
 import { PrismaService } from '../common/prisma.service';
@@ -7,6 +8,8 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -14,6 +17,7 @@ export class UserService {
     private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private prismaService: PrismaService,
+    private jwtService: JwtService
   ) {}
 
 
@@ -58,6 +62,8 @@ export class UserService {
       },
     });
 
+    
+
     if (!user) {
       throw new HttpException('Invalid username or password', 400);
     }
@@ -68,10 +74,51 @@ export class UserService {
       throw new HttpException('Invalid username or password', 400);
     }
 
+
+    await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        lastLogin: new Date(),
+      },
+    })
+
+    const payload = {
+      username: user.username,
+      sub: {
+        name: user.name,
+      }
+      
+    }
+
     return {
       id: user.id,
       username: user.username,
       name: user.name,
+      backendTokens:{
+        accessToken: await this.jwtService.signAsync(payload,{
+          expiresIn: '1h',
+          privateKey: process.env.JWT_SECRET_KEY,
+        }),
+        refreshToken: await this.jwtService.signAsync(payload,{
+          expiresIn: '7d',
+          privateKey: process.env.JWT_REFRES_TOKEN,
+        }),
+      }
     };
   }
+
+  async findByid(id: string): Promise<UserResponse> {
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+    });
+  
+    if (!user) {
+      throw new error(`User with id ${id} not found`);
+    }
+  
+    return user;
+  }
+  
 }

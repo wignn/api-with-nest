@@ -14,14 +14,15 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   profilePic String?
-  username   String   @unique
-  email      String   @unique
+  username   String    @unique
+  email      String    @unique
   name       String?
   password   String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  token     String?
-  valToken  String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  lastLogin  DateTime?
+  token      String?
+  valToken   String?
 }

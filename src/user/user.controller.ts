@@ -1,11 +1,12 @@
 import { WebResponse } from 'src/model/web.model';
 import { UserService } from './user.service';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import {
   LoginUserRequest,
   RegisterUserRequest,
   UserResponse,
 } from '../model/user.model';
+import { JwtGuard } from './guards/jwt.guard';
 
 @Controller('/api/users')
 export class UserController {
@@ -32,4 +33,15 @@ export class UserController {
       data: result,
     };
   }
+
+  @UseGuards(JwtGuard)
+  @Get(":id")
+  async getUser(@Param('id') id: string): Promise<WebResponse<UserResponse>> {
+    const result = await this.UserService.findByid(id);
+    console.log(id)
+    return {
+      data: result,
+    };
+  }
+
 }

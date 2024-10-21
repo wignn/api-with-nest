@@ -121,4 +121,27 @@ export class UserService {
     return user;
   }
   
+  async refreshToken(user:any): Promise<UserResponse> {
+    const payload = {
+      username: user.username,
+      sub: {
+        name: user.name,
+      }
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      backendTokens:{
+        accessToken: await this.jwtService.signAsync(payload,{
+          expiresIn: '1h',
+          privateKey: process.env.JWT_SECRET_KEY,
+        }),
+        refreshToken: await this.jwtService.signAsync(payload,{
+          expiresIn: '7d',
+          privateKey: process.env.JWT_REFRES_TOKEN,
+        }),
+      }
+    }
+  }
 }

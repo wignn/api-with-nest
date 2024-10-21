@@ -1,5 +1,5 @@
 import { ValidationService } from './../common/validate.service';
-import { UserResponse } from './../model/user.model';
+import { LoginUserRequest, UserResponse } from './../model/user.model';
 import { PrismaService } from '../common/prisma.service';
 import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { RegisterUserRequest } from 'src/model/user.model';
@@ -15,6 +15,8 @@ export class UserService {
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private prismaService: PrismaService,
   ) {}
+
+
   async register(request: RegisterUserRequest): Promise<UserResponse> {
     this.logger.info(`Registering new user ${JSON.stringify(request)}`);
     const registerRequest: RegisterUserRequest =
@@ -39,6 +41,37 @@ export class UserService {
         id: user.id,
         username: user.username,
         name: user.name,
+    };
+  }
+  
+  async login(request: LoginUserRequest): Promise<UserResponse> {
+    
+    this.logger.info(`Logging in user ${JSON.stringify(request)}`);
+    const loginRequest: LoginUserRequest = this.validationService.validate(
+      UserValidation.LOGIN,
+      request,
+    );
+
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        username: loginRequest.username,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('Invalid username or password', 400);
+    }
+
+    const isPasswordMatch = await bcrypt.compare(loginRequest.password, user.password);
+
+    if (!isPasswordMatch) {
+      throw new HttpException('Invalid username or password', 400);
+    }
+
+    return {
+      id: user.id,
+      username: user.username,
+      name: user.name,
     };
   }
 }

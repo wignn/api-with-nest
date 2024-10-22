@@ -2,11 +2,11 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { MailService } from './mailer.service';
 import { MailerRequest } from 'src/model/mailer.model';
 
-@Controller('mailer')
+@Controller('/api/mailer')
 export class MailerController {
     constructor(private MailerService: MailService) {}
 
-    @Post('send')
+    @Post()
     async sendMail(@Body() request: MailerRequest ) {
         return await this.MailerService.verifyEmail(request);
     }

@@ -173,7 +173,7 @@ export class UserService {
 
     resetUser.password = await bcrypt.hash(resetUser.password, 10);
 
-    const user = await this.prismaService.user.update({
+   await this.prismaService.user.update({
       where: { email: resetUser.email },
       data: resetUser,
     });

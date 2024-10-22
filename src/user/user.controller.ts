@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Request,
   UseGuards,
@@ -13,6 +14,7 @@ import {
 import {
   LoginUserRequest,
   RegisterUserRequest,
+  ResetRequest,
   UserResponse,
 } from '../model/user.model';
 import { JwtGuard } from './guards/jwt.guard';
@@ -21,7 +23,6 @@ import { RefreshJwtGuard } from './guards/refresh.guard';
 @Controller('/api/users')
 export class UserController {
   constructor(private UserService: UserService) {}
-
   @Post('/register')
   @HttpCode(200)
   async register(
@@ -61,5 +62,11 @@ export class UserController {
     return {
       data: result,
     };
+  }
+
+  @Patch('reset')
+  async resetPassword(@Body() request: ResetRequest): Promise<string> {
+    const result = await this.UserService.resetPassword(request);
+    return result;
   }
 }

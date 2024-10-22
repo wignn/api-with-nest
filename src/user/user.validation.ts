@@ -19,4 +19,11 @@ export class UserValidation {
         username: z.string().min(3).max(100),
         password: z.string().min(6).max(100),
     })
+
+
+    static readonly RESET : ZodType = z.object({
+        email: z.string().min(3).max(100),
+        password: z.string().min(6).max(100),
+        valToken: z.string().min(6)
+    })
 }

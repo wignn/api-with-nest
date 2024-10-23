@@ -60,3 +60,4 @@ jobs:
           app-name: 'library-app'
           slot-name: 'Production'
           package: .
+

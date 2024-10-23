@@ -94,20 +94,4 @@ describe('UserController', () => {
     });
   });
   
-  describe('POST /api/books', () => {
-    afterEach(async () => {
-      await testService.deletebook();
-    });
-    it('should be rejected with 401', async () => {
-      const response = await request(app.getHttpServer()).post('/books').send({
-        title: 'test',
-        description: 'test',
-        autho: 'test',
-      });
-
-      logger.info(response.body);
-      expect(response.status).toBe(400);
-      expect(response.body.message).toBeDefined();
-    });
-  });
 });

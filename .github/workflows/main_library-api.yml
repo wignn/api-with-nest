@@ -23,6 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
+          set -e # stop the script if any command fails
           npm install
           npm run build --if-present
           npm run test --if-present
@@ -51,9 +52,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_B1A65946041F403DB630587FE518921E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B3D6753336094DBA90B2E6BA76F008BC }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_81BA40F3306F48C79F22F58B9FF9223D }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
@@ -62,4 +63,5 @@ jobs:
           app-name: 'library-api'
           slot-name: 'Production'
           package: .
+
           

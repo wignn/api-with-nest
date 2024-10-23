@@ -1,4 +1,5 @@
 export class CreateBookRequest {
+  cover: string;
   title: string;
   author: string;
   description: string;

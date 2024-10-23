@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,8 @@ import {
   LoginUserRequest,
   RegisterUserRequest,
   ResetRequest,
+  UpdateUserRequest,
+  UpdateUserRespone,
   UserResponse,
 } from '../model/user.model';
 import { JwtGuard } from './guards/jwt.guard';
@@ -47,6 +50,7 @@ export class UserController {
 
   @UseGuards(JwtGuard)
   @Get(':id')
+  @HttpCode(200)
   async getUser(@Param('id') id: string): Promise<WebResponse<UserResponse>> {
     const result = await this.UserService.findByid(id);
     console.log(id);
@@ -57,6 +61,7 @@ export class UserController {
 
   @UseGuards(RefreshJwtGuard)
   @Post('refresh')
+  @HttpCode(200)
   async refreshToken(@Request() req): Promise<WebResponse<UserResponse>> {
     const result = await this.UserService.refreshToken(req.user);
     return {
@@ -64,9 +69,27 @@ export class UserController {
     };
   }
 
-  @Patch('reset')
-  async resetPassword(@Body() request: ResetRequest): Promise<string> {
+  @Put()
+  @HttpCode(200)
+  async resetPassword(
+    @Body() request: ResetRequest,
+  ): Promise<WebResponse<string>> {
     const result = await this.UserService.resetPassword(request);
-    return result;
+    return {
+      data: result,
+    };
   }
+
+  @Patch()
+  @HttpCode(200)
+  async updateUser(
+    @Body() request: UpdateUserRequest,
+  ): Promise<WebResponse<UpdateUserRespone>> {
+    const result = await this.UserService.update(request);
+    return {
+      data: result,
+    };
+  }
+
+  
 }

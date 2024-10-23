@@ -25,4 +25,12 @@ export class TestService {
       },
     });
   }
+
+  async deletebook() {
+    await this.PrismaService.book.deleteMany({
+      where: {
+        title: 'test',
+      },
+    });
+  }
 }

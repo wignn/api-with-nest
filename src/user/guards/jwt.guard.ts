@@ -20,6 +20,7 @@ import {
         const payload = await this.jwtService.verifyAsync(token, {
           secret: process.env.JWT_SECRET_KEY,
         });
+        
         request['user'] = payload;
       } catch {
         throw new UnauthorizedException();

@@ -20,9 +20,55 @@ model User {
   email      String    @unique
   name       String?
   password   String
+  bio        String?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   lastLogin  DateTime?
   token      String?
   valToken   String?
+  Book       bookMark[]
+}
+
+model bookMark {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Book      Book     @relation(fields: [bookId], references: [id])
+}
+
+model Book {
+  asset       String?
+  id          String   @id @default(cuid())
+  cover       String
+  title       String
+  author      String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Genre       Genre[]
+  Chapter     Chapter[]
+  bookMark    bookMark[]
+}
+
+model Genre {
+  id String @id @default(cuid())
+  title String
+  bookId String
+  description String
+  Book Book? @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chapter {
+  id String @id @default(cuid())
+  title String
+  bookId String
+  description String?
+  Book Book @relation(fields: [bookId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -4,16 +4,18 @@ import {
   LoginUserRequest,
   UserResponse,
   ResetRequest,
+  UpdateUserRequest,
+  UpdateUserRespone,
 } from './../model/user.model';
 import { PrismaService } from '../common/prisma.service';
-import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { Global, HttpException, Inject, Injectable } from '@nestjs/common';
 import { RegisterUserRequest } from 'src/model/user.model';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
-
 import { error } from 'console';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -82,6 +84,7 @@ export class UserService {
         id: user.id,
       },
       data: {
+        token: uuidv4(),
         lastLogin: new Date(),
       },
     });
@@ -173,11 +176,49 @@ export class UserService {
 
     resetUser.password = await bcrypt.hash(resetUser.password, 10);
 
-   await this.prismaService.user.update({
+    await this.prismaService.user.update({
       where: { email: resetUser.email },
       data: resetUser,
     });
 
-    return "reset succesfull";
+    return 'reset succesfull';
+  }
+
+  async update(request: UpdateUserRequest): Promise<UpdateUserRespone> {
+    this.logger.info(`Updating user ${JSON.stringify(request)}`);
+    const updateUser: UpdateUserRequest = this.validationService.validate(
+      UserValidation.UPDATE,
+      request,
+    );
+
+    const user = await this.prismaService.user.findUnique({
+      where: { id: updateUser.id },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', 400);
+    }
+
+    await this.prismaService.user.update({
+      where: { id: request.id },
+      data: updateUser,
+    });
+
+    return {
+      id: user.id,
+      bio: updateUser.bio,
+      name: updateUser.name,
+      profilePic: updateUser.profilePic,
+    };
+  }
+
+  async findUserByToken(token: string) {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        token,
+      },
+    });
+
+    return user;
   }
 }

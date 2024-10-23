@@ -7,4 +7,5 @@ import { MailService } from "./mailer.service";
     providers: [MailService],
     controllers: [MailerController]
 })
+
 export class MailerModule {}

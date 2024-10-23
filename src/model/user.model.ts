@@ -26,4 +26,18 @@ export class ResetRequest {
   valToken: string
 }
 
+export class UpdateUserRequest {
+  id: string;
+  bio?: string;
+  name?: string;
+  profilePic?: string;
+}
+
+
+export class UpdateUserRespone {
+  id: string;
+  bio?: string;
+  name?: string;
+  profilePic?: string;
+}
 

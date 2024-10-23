@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { MailService } from './mailer.service';
-import { MailerRequest } from 'src/model/mailer.model';
+import { MailerRequest } from '../model/mailer.model';
 
 @Controller('/api/mailer')
 export class MailerController {

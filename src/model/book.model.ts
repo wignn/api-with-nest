@@ -10,8 +10,23 @@ export class CreateBookResponse {
   title: string;
   author: string;
   description: string;
+}
 
+export class updateBookRequest {
+  id: string;
+  title?: string;
+  description?: string;
+  asset?: string;
+  cover?: string;
+  author?: string;
 }
 
 
-
+export class UpdateBookResponse {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  cover: string;
+  asset: string;
+}

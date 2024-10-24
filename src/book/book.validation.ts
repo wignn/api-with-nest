@@ -9,8 +9,11 @@ export class BookValidation {
     })
 
     static readonly UPDATE: ZodType = z.object({
+        id: z.string().min(3),
         title: z.string().min(3).optional(),
         author: z.string().min(3).optional(),
         description: z.string().min(3).optional(),
+        cover: z.string().min(3).optional(),
+        asset: z.string().min(3).optional(),
     })
 }

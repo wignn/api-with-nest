@@ -21,6 +21,7 @@ export class BookService {
     private prismaService: PrismaService,
   ) {}
 
+  
   async registerBook(request: CreateBookRequest): Promise<CreateBookResponse> {
     this.logger.info(`Registering book ${JSON.stringify(request)}`);
     const CreateBookRequest: CreateBookRequest =
@@ -48,50 +49,53 @@ export class BookService {
     };
   }
 
+  async getAll(): Promise<any> {
+    this.logger.info('Getting all books');
+    const books = await this.prismaService.book.findMany({
+      include: {
+        Chapter: true,
+      },
+    });
+
+    return books;
+  }
+
   async findByQuery(request: string): Promise<any> {
     this.logger.info(`Finding book ${request}`);
 
-
-    let book;
-
-    if(request.length < 0) {
-      book = await this.prismaService.book.findFirst({
-        where: {
-          OR: [
-            {
-              id: {
-                contains: request,
-              },
+    const book = await this.prismaService.book.findFirst({
+      where: {
+        OR: [
+          {
+            id: {
+              contains: request,
             },
-            {
-              title: {
-                contains: request,
-              },
+          },
+          {
+            title: {
+              contains: request,
             },
-            {
-              author: {
-                contains: request,
-              },
+          },
+          {
+            author: {
+              contains: request,
             },
-          ],
-        },
-        include: {
-          Chapter: true,
-        },
-      });
-    }else{
-      book = await this.prismaService.book.findMany()
-    }
-
+          },
+        ],
+      },
+      include: {
+        Chapter: true,
+      },
+    });
 
     if (!book) {
-      throw new error(`User with id ${book} not found`);
+      throw new error(`Book with query ${request} not found`);
     }
 
     return book;
   }
 
-  async updateBook(id: string ,request: CreateBookRequest) {
+  async updateBook(id: string, request: CreateBookRequest) {
     this.logger.info(`Updating book ${JSON.stringify(request)}`);
     const updateBookRequest: updateBookRequest =
       this.ValidationService.validate(BookValidation.UPDATE, request);
@@ -116,7 +120,6 @@ export class BookService {
       description: book.description,
       cover: book.cover,
       asset: book.asset,
-      
     };
   }
 

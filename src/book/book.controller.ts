@@ -12,7 +12,7 @@ export class BookController {
   @UseGuards(BookGuard)
   @Post()
   @HttpCode(200)
-  async registerBook(
+  async Create(
     @Body() request: CreateBookRequest,
   ): Promise<WebResponse<CreateBookResponse>> {
     const response = await this.bookService.registerBook(request);
@@ -20,15 +20,23 @@ export class BookController {
   }
 
   @Get(':id')
-  async getBooks(
+  async GetByQuery(
     @Param('id') request: string,
-  ):Promise<WebResponse<any>> {
+  ): Promise<WebResponse<any>> {
     const response = await this.bookService.findByQuery(request);
     return { data: response };
   }
 
+  @Get()
+  async GetAll(
+    @Body() request: any
+  ):Promise<WebResponse<any>> {
+    const response = await this.bookService.getAll();
+    return { data: response };
+  }
+
   @Put(':id')
-  async updateBook(
+  async Update(
     @Param('id') id: string,
     @Body() body: CreateBookRequest,
   ):Promise<WebResponse<any>> {
@@ -38,7 +46,7 @@ export class BookController {
 
 
   @Delete(':id')
-  async deleteBook(
+  async DeleteBook(
     @Param('id') request: string,
   ):Promise<WebResponse<any>> {
     const response = await this.bookService.deleteBook(request);

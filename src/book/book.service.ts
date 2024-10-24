@@ -50,30 +50,39 @@ export class BookService {
 
   async findByQuery(request: string): Promise<any> {
     this.logger.info(`Finding book ${request}`);
-    const book = await this.prismaService.book.findFirst({
-      where: {
-        OR: [
-          {
-            id: {
-              contains: request,
+
+
+    let book;
+
+    if(request.length < 0) {
+      book = await this.prismaService.book.findFirst({
+        where: {
+          OR: [
+            {
+              id: {
+                contains: request,
+              },
             },
-          },
-          {
-            title: {
-              contains: request,
+            {
+              title: {
+                contains: request,
+              },
             },
-          },
-          {
-            author: {
-              contains: request,
+            {
+              author: {
+                contains: request,
+              },
             },
-          },
-        ],
-      },
-      include: {
-        Chapter: true,
-      },
-    });
+          ],
+        },
+        include: {
+          Chapter: true,
+        },
+      });
+    }else{
+      book = await this.prismaService.book.findMany()
+    }
+
 
     if (!book) {
       throw new error(`User with id ${book} not found`);

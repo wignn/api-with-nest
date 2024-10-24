@@ -9,6 +9,7 @@ export class UserResponse {
   id: string;
   name?: string;
   username: string;
+  token?: string;
   backendTokens?: {
     accessToken: string;
     refreshToken: string;

@@ -100,6 +100,7 @@ export class UserService {
       id: user.id,
       username: user.username,
       name: user.name,
+      token: user.token,
       backendTokens: {
         accessToken: await this.jwtService.signAsync(payload, {
           expiresIn: '1h',
@@ -136,6 +137,7 @@ export class UserService {
       id: user.id,
       username: user.username,
       name: user.name,
+      token: user.token,
       backendTokens: {
         accessToken: await this.jwtService.signAsync(payload, {
           expiresIn: '1h',

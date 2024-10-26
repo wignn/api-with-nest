@@ -24,25 +24,6 @@ describe('bookController', () => {
     logger = app.get(WINSTON_MODULE_PROVIDER);
   });
 
-  describe('POST /api/books', () => {
-    afterEach(async () => {
-      await testService.deletebook();
-    });
-    it('should be rejected with 401', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/api/books')
-        .send({
-          title: 'test',
-          description: 'test',
-          author: 'test',
-        });
-
-      logger.info(response.body);
-      expect(response.status).toBe(400);
-      expect(response.body.message).toBeDefined();
-    });
-  });
-
   describe('POST /api/genre', () => {
     afterEach(async () => {
       await testService.DeleteGenre();

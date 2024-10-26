@@ -79,7 +79,7 @@ export class UserService {
       throw new HttpException('Invalid username or password', 400);
     }
 
-    await this.prismaService.user.update({
+   const data =  await this.prismaService.user.update({
       where: {
         id: user.id,
       },
@@ -97,10 +97,10 @@ export class UserService {
     };
 
     return {
-      id: user.id,
-      username: user.username,
-      name: user.name,
-      token: user.token,
+      id: data.id,
+      username: data.username,
+      name: data.name,
+      token: data.token,
       backendTokens: {
         accessToken: await this.jwtService.signAsync(payload, {
           expiresIn: '1h',

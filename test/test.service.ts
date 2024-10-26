@@ -1,5 +1,5 @@
 import { PrismaService } from '../src/common/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Delete } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -32,5 +32,13 @@ export class TestService {
         title: 'test',
       },
     });
+  }
+
+  async DeleteGenre() {
+    await this.PrismaService.genre.deleteMany({
+      where: {
+        title: 'test',
+      },
+    })
   }
 }

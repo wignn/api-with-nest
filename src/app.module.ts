@@ -5,9 +5,17 @@ import { CommonModule } from './common/common.module';
 import { userModule } from './user/user.module';
 import { MailerModule } from './mailer/mailer.module';
 import { bookModule } from './book/book.module';
+import { GenreModule } from './genre/genre.module';
 
 @Module({
-  imports: [CommonModule, userModule, MailerModule, userModule, bookModule],
+  imports: [
+    CommonModule,
+    userModule,
+    MailerModule,
+    userModule,
+    bookModule,
+    GenreModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

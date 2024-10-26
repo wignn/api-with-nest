@@ -28,7 +28,7 @@ describe('bookController', () => {
     afterEach(async () => {
       await testService.DeleteGenre();
     });
-    it('should be rejected with 400', async () => {
+    it('should be successful with status 200', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/genre')
         .send({

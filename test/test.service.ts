@@ -33,12 +33,22 @@ export class TestService {
       },
     });
   }
+  async createBook() {
+    await this.PrismaService.book.create({
+      data: {
+        title: 'test',
+        description: 'test',
+        author: 'test',
+        cover: 'test',
+      },
+    });
+  }
 
   async DeleteGenre() {
     await this.PrismaService.genre.deleteMany({
       where: {
         title: 'test',
       },
-    })
+    });
   }
 }

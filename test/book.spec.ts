@@ -38,26 +38,54 @@ describe('bookController', () => {
         });
 
       logger.info(response.body);
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(401);
       expect(response.body.message).toBeDefined();
     });
-  });
 
-  describe('POST /api/genre', () => {
-    afterEach(async () => {
-      await testService.DeleteGenre();
-    });
-    it('should be rejected with 400', async () => {
+    it('should be successful with status 200', async () => {
       const response = await request(app.getHttpServer())
-        .post('/api/genre')
+        
+        .post('/api/books')
         .send({
           title: 'test',
           description: 'test',
+          author: 'test',
+          cover: 'test',
         });
 
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body.message).toBeDefined();
     });
+  });
+
+  describe('GET /api/books/:query', () => {
+    beforeEach(async () => {
+      await testService.createBook();
+    });
+
+    afterEach(async () => {
+      await testService.deletebook();
+    });
+
+    it('should be successful with status 200', async () => {
+      const query = 'test';
+      const response = await request(app.getHttpServer()).get(
+        `/api/books/${query}`,
+      );
+
+      logger.info(response.body);
+
+      expect(response.status).toBe(200);
+      expect(response.body.data.title).toBe('test');
+    });
+  });
+
+  it('should be successful with status 200', async () => {
+    const response = await request(app.getHttpServer()).get('/api/books');
+    logger.info(response.body);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data).toBeDefined();
   });
 });

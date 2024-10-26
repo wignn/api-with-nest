@@ -19,9 +19,9 @@ export class BookController {
     return { data: response };
   }
 
-  @Get(':id')
+  @Get(':query')
   async GetByQuery(
-    @Param('id') request: string,
+    @Param('query') request: string,
   ): Promise<WebResponse<any>> {
     const response = await this.bookService.findByQuery(request);
     return { data: response };

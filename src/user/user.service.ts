@@ -199,7 +199,7 @@ export class UserService {
       data: resetUser,
     });
 
-    return 'reset succesfull';
+    return 'reset successful';
   }
 
   async update(request: UpdateUserRequest): Promise<UpdateUserRespone> {

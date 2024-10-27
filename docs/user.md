@@ -136,22 +136,30 @@ Response Body (Failed) :
 "erors":"Unauthorized...."
 ```
 
+## Reset Password
 
+Endpoint: PUT /api/users
 
 Request Header :
 
-- X-APi-TOKEN : TOKEN
+- authorization : token
 
-Endpoint : DELETE /api/users/current
+Request Body :
+
+```json
+{
+  "email": "wign@gmail.com",
+  "password": "newpassword",
+  "valtoken":"akjdadg-dfgfdgfdg-hfnsas-faghqb5tnm-adadrrw",
+}
+```
 
 Response Body (Success) :
 
 ```json
-    "data": "OK"
+{
+  "message": "reset successful"
+}
 ```
 
-Response Body (Failed) :
 
-```json
-"erors":"Unauthorized..."
-```

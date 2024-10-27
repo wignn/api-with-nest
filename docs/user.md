@@ -18,11 +18,13 @@ Request Body :
 Response Body (Success) :
 
 ```json
+{
     "data": {
         "id": "cm2qyq4pp0000d3g9bzmdwykt",
         "username": "wign",
         "name": "wign66"
     }
+}
 ```
 
 Response Body (Failed) :

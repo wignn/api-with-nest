@@ -51,4 +51,21 @@ export class TestService {
       },
     });
   }
+
+  async Token() {
+    const user = await this.PrismaService.user.findUnique({
+      where: {
+        username: 'wignn',
+      },
+    });
+  
+    if (!user) {
+      throw new Error("User with username 'test' not found.");
+    }
+  
+    return user.token
+  
+  }
+  
+
 }

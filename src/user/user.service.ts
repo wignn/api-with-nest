@@ -8,7 +8,7 @@ import {
   UpdateUserRespone,
 } from './../model/user.model';
 import { PrismaService } from '../common/prisma.service';
-import { Global, HttpException, Inject, Injectable } from '@nestjs/common';
+import {  HttpException, Inject, Injectable } from '@nestjs/common';
 import { RegisterUserRequest } from 'src/model/user.model';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -114,13 +114,19 @@ export class UserService {
     };
   }
 
-  async findByid(id: string): Promise<UserResponse> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id },
+  async findByid(request: string): Promise<UserResponse> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        OR: [
+          { id: request },
+          { username: { contains: request } },
+          {email: request}
+        ],
+      },
     });
 
     if (!user) {
-      throw new error(`User with id ${id} not found`);
+      throw new HttpException(`User with id ${request}} not found`, 404);
     }
 
     return user;

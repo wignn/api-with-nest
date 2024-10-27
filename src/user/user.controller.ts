@@ -49,9 +49,9 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':id')
+  @Get(':query')
   @HttpCode(200)
-  async getUser(@Param('id') id: string): Promise<WebResponse<UserResponse>> {
+  async getUser(@Param('query') id: string): Promise<WebResponse<UserResponse>> {
     const result = await this.UserService.findByid(id);
     console.log(id);
     return {

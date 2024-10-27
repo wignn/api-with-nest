@@ -25,26 +25,34 @@ describe('bookController', () => {
   });
 
   describe('POST /api/books', () => {
+    let userToken;
+    beforeEach(async () => {
+      userToken = await testService.Token();
+    });
+    
     afterEach(async () => {
       await testService.deletebook();
     });
-    it('should be rejected with 401', async () => {
+    
+    it('should be rejected with 200', async () => {
       const response = await request(app.getHttpServer())
+        .set('authorization', `${userToken}`)
         .post('/api/books')
         .send({
           title: 'test',
           description: 'test',
           author: 'test',
+          cover: 'test',
         });
-
+    
       logger.info(response.body);
-      expect(response.status).toBe(401);
+      expect(response.status).toBe(200);
       expect(response.body.message).toBeDefined();
     });
+    
 
-    it('should be successful with status 200', async () => {
+    it('should be successful with status 401', async () => {
       const response = await request(app.getHttpServer())
-        
         .post('/api/books')
         .send({
           title: 'test',
@@ -54,7 +62,7 @@ describe('bookController', () => {
         });
 
       logger.info(response.body);
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(401);
       expect(response.body.message).toBeDefined();
     });
   });

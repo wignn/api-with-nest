@@ -2,7 +2,7 @@
 
 ## Register User
 
-Endpoint: POST /api/users
+Endpoint: POST /api/users/register
 
 Request Body :
 
@@ -48,14 +48,14 @@ Response Body (Success):
 
 ```json
 {
-  "data": {
-    "id": "cm2qyq4pp0000d3g9bzmdwykt",
-    "username": "wign",
-    "name": "wign66",
-    "token": "dvgfdbghhthghs-dfsdfgrhtybvgf-dssdfsdfs-dfsdfsdfsf",
-    "backendTokens": {
-      "accessToken": "asndjasbndknskdskjaskjdkajskldjkasjd",
-      "refreshToken": "skadknjqw2indqwionadasijddij"
+   "data": {
+      "id": "cm2qyq4pp0000d3g9bzmdwykt",
+      "username": "wign",
+      "name": "wign66",
+      "token": "dvgfdbghhthghs-dfsdfgrhtybvgf-dssdfsdfs-dfsdfsdfsf",
+       "backendTokens": {
+        "accessToken": "asndjasbndknskdskjaskjdkajskldjkasjd",
+        "refreshToken": "skadknjqw2indqwionadasijddij"
     }
   }
 }

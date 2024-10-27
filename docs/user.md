@@ -53,7 +53,7 @@ Response Body (Success):
       "username": "wign",
       "name": "wign66",
       "token": "dvgfdbghhthghs-dfsdfgrhtybvgf-dssdfsdfs-dfsdfsdfsf",
-       "backendTokens": {
+      "backendTokens": {
         "accessToken": "asndjasbndknskdskjaskjdkajskldjkasjd",
         "refreshToken": "skadknjqw2indqwionadasijddij"
     }

@@ -34,6 +34,16 @@ export class UpdateUserRequest {
   profilePic?: string;
 }
 
+export class UserGetResponse {
+  id: string;
+  name?: string;
+  username: string;
+  profilePic?: string;
+  email: string;
+  createdAt: string;
+  token?: string;
+  lastLogin : string;
+}
 
 export class UpdateUserRespone {
   id: string;

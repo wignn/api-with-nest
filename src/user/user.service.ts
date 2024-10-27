@@ -6,9 +6,10 @@ import {
   ResetRequest,
   UpdateUserRequest,
   UpdateUserRespone,
+  UserGetResponse,
 } from './../model/user.model';
 import { PrismaService } from '../common/prisma.service';
-import {  HttpException, Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { RegisterUserRequest } from 'src/model/user.model';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -79,7 +80,7 @@ export class UserService {
       throw new HttpException('Invalid username or password', 400);
     }
 
-   const data =  await this.prismaService.user.update({
+    const data = await this.prismaService.user.update({
       where: {
         id: user.id,
       },
@@ -114,13 +115,13 @@ export class UserService {
     };
   }
 
-  async findByid(request: string): Promise<UserResponse> {
+  async findByid(request: string): Promise<UserGetResponse> {
     const user = await this.prismaService.user.findFirst({
       where: {
         OR: [
           { id: request },
           { username: { contains: request } },
-          {email: request}
+          { email: request },
         ],
       },
     });
@@ -129,7 +130,16 @@ export class UserService {
       throw new HttpException(`User with id ${request}} not found`, 404);
     }
 
-    return user;
+    return {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      profilePic: user.profilePic,
+      email: user.email,
+      createdAt: user.createdAt.toISOString(),
+      token: user.token,
+      lastLogin: user.lastLogin.toISOString(),
+    };
   }
 
   async refreshToken(user: any): Promise<UserResponse> {

@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Param } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return ('Api is working!');
+  async working () : Promise<string> {
+    return 'api working';
+  }
+
+  async doc() : Promise<string> {
+    return 'documentation: https://github.com/wignn/api-with-nest';
   }
 }

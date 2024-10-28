@@ -132,7 +132,7 @@ Response Body (Failed) :
 
 ## Delete
 
-DELETE /api/:id
+DELETE /api/books/:id
 
 - authorization : token
 

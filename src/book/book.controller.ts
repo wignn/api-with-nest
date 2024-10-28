@@ -34,7 +34,8 @@ export class BookController {
     const response = await this.bookService.getAll();
     return { data: response };
   }
-
+  
+  @UseGuards(BookGuard)
   @Put(':id')
   async Update(
     @Param('id') id: string,
@@ -44,7 +45,7 @@ export class BookController {
     return { data: response }
   }
 
-
+  @UseGuards(BookGuard)
   @Delete(':id')
   async DeleteBook(
     @Param('id') request: string,

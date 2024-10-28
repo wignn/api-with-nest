@@ -131,3 +131,21 @@ Response Body (Failed) :
 ```
 
 ## Delete
+
+DELETE /api/:id
+
+- authorization : token
+
+Response Body (Success) :
+
+```json
+{
+  "message": "Book deleted"
+}
+```
+
+Response Body (Failed) :
+
+```json
+"errors": "Book not found"
+```

@@ -60,17 +60,17 @@ describe('BookController', () => {
 
     it('should respond with status 401 if authorization is missing', async () => {
       const response = await request(app.getHttpServer())
-      .post('/api/books')
-      .send({
-        title: 'testq',
-        description: 'test',
-        author: 'test',
-        cover: 'test',
-      });
+        .post('/api/books')
+        .send({
+          title: 'testq',
+          description: 'test',
+          author: 'test',
+          cover: 'test',
+        });
 
-    logger.info(response.body);
-    expect(response.status).toBe(401);
-    expect(response.body.errors).toBeDefined();
+      logger.info(response.body);
+      expect(response.status).toBe(401);
+      expect(response.body.errors).toBeDefined();
     });
   });
 
@@ -106,12 +106,19 @@ describe('BookController', () => {
 
   describe('PUT /api/books/:id', () => {
     let bookId: string;
-    let id: string;
+    let token: string;
     beforeEach(async () => {
       const book = await testService.createBook();
       bookId = book;
-  });
-  
+      await testService.createUser();
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/users/login')
+        .send({
+          username: 'test',
+          password: 'test123',
+        });
+      token = loginResponse.body.data.token;
+    });
 
     afterEach(async () => {
       await testService.deletebook();
@@ -121,6 +128,7 @@ describe('BookController', () => {
     it('should update a book with status 200', async () => {
       const response = await request(app.getHttpServer())
         .put(`/api/books/${bookId}`)
+        .set('Authorization', `${token}`)
         .send({
           description: 'updated description',
           author: 'updated author',
@@ -136,21 +144,32 @@ describe('BookController', () => {
 
   describe('DELETE /api/books/:id', () => {
     let bookId: string;
+    let token: string;
     beforeEach(async () => {
       const book = await testService.createBook();
+      await testService.createUser();
+      const loginResponse = await request(app.getHttpServer())
+        .post('/api/users/login')
+        .send({
+          username: 'test',
+          password: 'test123',
+        });
+      token = loginResponse.body.data.token;
       bookId = book;
     });
 
     afterEach(async () => {
       await testService.deletebook();
+      await testService.deleteUser();
     });
 
     it('should delete a book with status 200', async () => {
-      const response = await request(app.getHttpServer()).delete(
-        `/api/books/${bookId}`,
-      );
+      const response = await request(app.getHttpServer())
+        .delete(`/api/books/${bookId}`)
+        .set('Authorization', `${token}`);
 
       logger.info(response.body);
+
       expect(response.status).toBe(200);
       expect(response.body.data).toBeDefined();
     });

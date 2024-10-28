@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { BookService } from './book.service';
-import { CreateBookRequest, CreateBookResponse } from '../model/book.model';
+import { CreateBookRequest, CreateBookResponse, updateBookRequest } from '../model/book.model';
 import { WebResponse } from '../model/web.model';
 import { BookGuard } from './guards/book.guard';
 
@@ -38,7 +38,7 @@ export class BookController {
   @Put(':id')
   async Update(
     @Param('id') id: string,
-    @Body() body: CreateBookRequest,
+    @Body() body: updateBookRequest,
   ):Promise<WebResponse<any>> {
     const response = await this.bookService.updateBook(id, body);
     return { data: response }

@@ -15,30 +15,28 @@ import { error } from 'console';
 @Injectable()
 export class BookService {
   constructor(
-    private ValidationService: ValidationService,
+    private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER)
     private logger: Logger,
     private prismaService: PrismaService,
   ) {}
 
-  
   async registerBook(request: CreateBookRequest): Promise<CreateBookResponse> {
     this.logger.info(`Registering book ${JSON.stringify(request)}`);
-    const CreateBookRequest: CreateBookRequest =
-      this.ValidationService.validate(BookValidation.CREATE, request);
+    const validatedRequest = this.validationService.validate(BookValidation.CREATE, request);
 
     const totalBookWithSameTitle = await this.prismaService.book.count({
       where: {
-        title: CreateBookRequest.title,
+        title: validatedRequest.title,
       },
     });
 
-    if (totalBookWithSameTitle != 0) {
+    if (totalBookWithSameTitle !== 0) {
       throw new HttpException('Book already exists', 400);
     }
 
     const book = await this.prismaService.book.create({
-      data: CreateBookRequest,
+      data: validatedRequest,
     });
 
     return {
@@ -49,15 +47,13 @@ export class BookService {
     };
   }
 
-  async getAll(): Promise<any> {
+  async getAll(): Promise<CreateBookResponse[]> {
     this.logger.info('Getting all books');
-    const books = await this.prismaService.book.findMany({
+    return await this.prismaService.book.findMany({
       include: {
         Chapter: true,
       },
     });
- 
-    return books;
   }
 
   async findByQuery(request: string): Promise<any> {
@@ -66,60 +62,45 @@ export class BookService {
     const book = await this.prismaService.book.findFirst({
       where: {
         OR: [
-          {
-            id: {
-              contains: request,
-            },
-          },
-          {
-            title: {
-              contains: request,
-            },
-          },
-          {
-            author: {
-              contains: request,
-            },
-          },
+          { id: { contains: request } },
+          { title: { contains: request } },
+          { author: { contains: request } },
         ],
       },
-      include: {
-        Chapter: true,
-      },
+      include: { Chapter: true },
     });
 
     if (!book) {
-      throw new error(`Book with query ${request} not found`);
+      throw new HttpException(`Book with query ${request} not found`, 404);
     }
 
     return book;
   }
 
-  async updateBook(id: string, request: CreateBookRequest) {
+  async updateBook(id: string, request: updateBookRequest) {
     this.logger.info(`Updating book ${JSON.stringify(request)}`);
-    const updateBookRequest: updateBookRequest =
-      this.ValidationService.validate(BookValidation.UPDATE, request);
+    const validatedRequest = this.validationService.validate(BookValidation.UPDATE, request);
 
     const book = await this.prismaService.book.findUnique({
-      where: { id: updateBookRequest.id },
+      where: { id },
     });
 
     if (!book) {
-      throw new HttpException('Book not found', 400);
+      throw new HttpException('Book not found', 404);
     }
 
-    await this.prismaService.book.update({
-      where: { id: updateBookRequest.id },
-      data: updateBookRequest,
+    const updatedBook = await this.prismaService.book.update({
+      where: { id },
+      data: validatedRequest,
     });
 
     return {
-      id: book.id,
-      title: book.title,
-      author: book.author,
-      description: book.description,
-      cover: book.cover,
-      asset: book.asset,
+      id: updatedBook.id,
+      title: updatedBook.title,
+      author: updatedBook.author,
+      description: updatedBook.description,
+      cover: updatedBook.cover,
+      asset: updatedBook.asset,
     };
   }
 
@@ -130,13 +111,13 @@ export class BookService {
     });
 
     if (!book) {
-      throw new HttpException('Book not found', 400);
+      throw new HttpException('Book not found', 404);
     }
 
     await this.prismaService.book.delete({
       where: { id: request },
     });
 
-    return 'Book deleted';
+    return { message: 'Book deleted' };
   }
 }

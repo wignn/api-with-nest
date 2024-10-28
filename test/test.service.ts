@@ -34,7 +34,7 @@ export class TestService {
     });
   }
   async createBook() {
-    await this.PrismaService.book.create({
+    const book = await this.PrismaService.book.create({
       data: {
         title: 'test',
         description: 'test',
@@ -42,6 +42,7 @@ export class TestService {
         cover: 'test',
       },
     });
+  return book.id;
   }
 
   async DeleteGenre() {
@@ -66,6 +67,8 @@ export class TestService {
     return user.token
   
   }
+
+
+  }
   
 
-}

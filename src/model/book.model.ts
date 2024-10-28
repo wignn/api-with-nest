@@ -13,7 +13,6 @@ export class CreateBookResponse {
 }
 
 export class updateBookRequest {
-  id: string;
   title?: string;
   description?: string;
   asset?: string;

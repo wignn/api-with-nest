@@ -10,6 +10,7 @@ import { GenreService } from './genre.service';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -61,6 +62,13 @@ export class GenreController {
   @HttpCode(200)
   async ConenctGenre(@Body() request: ConnectGenreRequest): Promise<any> {
     const response = await this.GenreService.ConnectGenre(request);
+    return response;
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  async DeleteGenre(@Param('id') request: string): Promise<string> {
+    const response = await this.GenreService.DeleteGenre(request);
     return response;
   }
 }

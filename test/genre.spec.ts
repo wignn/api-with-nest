@@ -62,7 +62,7 @@ describe('bookController', () => {
 
     afterEach(async () => {
       await testService.DeleteGenre();
-    })
+    });
 
     it('should be successful with status 200', async () => {
       const response = await request(app.getHttpServer()).get('/api/genre');
@@ -82,18 +82,16 @@ describe('bookController', () => {
     });
   });
 
-
   describe('PUT /api/genre', () => {
     let id: string;
     beforeEach(async () => {
       const CreateBookResponse = await request(app.getHttpServer())
-      .post('/api/genre')
-      .send({
+        .post('/api/genre')
+        .send({
           title: 'test',
-          description: 'test'
-      });
-    id = CreateBookResponse.body.id;
-
+          description: 'test',
+        });
+      id = CreateBookResponse.body.id;
     });
 
     afterEach(async () => {
@@ -123,7 +121,40 @@ describe('bookController', () => {
       expect(response.status).toBe(400);
       expect(response.body.message).toBeDefined;
     });
+  });
 
+  describe('DELETE /api/genre', () => {
+    let id: string;
+    beforeEach(async () => {
+      const CreateBookResponse = await request(app.getHttpServer())
+        .post('/api/genre')
+        .send({
+          title: 'test',
+          description: 'test',
+        });
+      id = CreateBookResponse.body.id;
+    });
 
+    afterEach(async () => {
+      await testService.DeleteGenre;
+    });
+
+    it('should be successful with status 200', async () => {
+      const response = await request(app.getHttpServer()).delete(
+        `/api/genre/${id}`,
+      );
+      logger.info(response.body);
+      expect(response.status).toBe(200);
+      expect(response.body.message).toBeDefined;
+    });
+
+    it('should not found with status 404', async () => {
+      const response = await request(app.getHttpServer()).delete(
+        `/api/genre`,
+      );
+      logger.info(response.body);
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBeDefined;
+    });
   });
 });

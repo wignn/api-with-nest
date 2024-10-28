@@ -1,4 +1,4 @@
-# User API Spec
+# Book API Spec
 
 ## Create Book
 
@@ -129,3 +129,5 @@ Response Body (Failed) :
 ```json
 "errors": "validation errors"
 ```
+
+## Delete

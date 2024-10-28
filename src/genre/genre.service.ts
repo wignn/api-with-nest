@@ -98,9 +98,12 @@ export class GenreService {
   }
 
   async ConnectGenre(request: ConnectGenreRequest): Promise<String> {
+    console.log(request);
     this.logger.info(`Connecting Genre ${JSON.stringify(request)}`);
     const ConnectGenreRequest: ConnectGenreRequest =
       this.validationService.validate(GenreValidation.CONECTED, request);
+      console.log("ksajda"+ConnectGenreRequest.bookId);
+      console.log("ssssss"+ConnectGenreRequest.genreId);
     await this.prismaService.genre.update({
       where: { id: ConnectGenreRequest.genreId },
       data: {
@@ -109,5 +112,18 @@ export class GenreService {
     });
 
     return 'Genre connected';
+  }
+
+
+  async DisconnectGenre(request: string): Promise<String> {
+    this.logger.info(`Disconnecting Genre ${JSON.stringify(request)}`);
+    await this.prismaService.genre.update({
+      where: { id:  request},
+      data: {
+        bookId: null,
+      },
+    });
+
+    return 'Genre disconnected';
   }
 }

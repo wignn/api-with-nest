@@ -65,6 +65,13 @@ export class GenreController {
     return response;
   }
 
+  @Put(':id')
+  @HttpCode(200)
+  async DisconnectGenre(@Body() request: string): Promise<any> {
+    const response = await this.GenreService.DisconnectGenre(request);
+    return response
+  }
+
   @Delete(':id')
   @HttpCode(200)
   async DeleteGenre(@Param('id') request: string): Promise<string> {

@@ -30,7 +30,7 @@ export class BookService {
     });
 
     if (totalBookWithSameTitle !== 0) {
-      throw new HttpException('Book already exists', 400);
+      throw new HttpException('Book already exists', 400);    
     }
 
     const book = await this.prismaService.book.create({
@@ -71,7 +71,6 @@ export class BookService {
     if (!book) {
       throw new HttpException(`Book with query ${request} not found`, 404);
     }
-
     return book;
   }
 

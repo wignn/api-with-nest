@@ -10,7 +10,6 @@ export class CreateGenreResponse {
 }
 
 export class UpdateGenreRequest {
-  id: string;
   title?: string;
   description?: string;
 }
@@ -19,10 +18,6 @@ export class UpdateGenreResponse {
   id: string;
   title: string;
   description: string;
-}
-
-export class GetGenreRequest {
-  id: string;
 }
 
 export class GetGenreResponse {

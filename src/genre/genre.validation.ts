@@ -7,7 +7,6 @@ export class GenreValidation {
     })
 
     static readonly UPDATE: ZodType = z.object({
-        id: z.string().min(3),
         title: z.string().min(3).optional(),
         description: z.string().min(3).optional(),
     })
@@ -22,9 +21,6 @@ export class GenreValidation {
         bookId: z.string().min(3),
     })
 
-    static readonly GET: ZodType = z.object({
-        id: z.string().min(3),
-    })
 
     static readonly DELETE: ZodType = z.object({
         id: z.string().min(3),

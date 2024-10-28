@@ -2,7 +2,6 @@ import {
   ConnectGenreRequest,
   CreateGenreResponse,
   DeleteGenreRequest,
-  GetGenreRequest,
   GetGenreResponse,
   UpdateGenreRequest,
 } from './../model/genre.model';
@@ -54,13 +53,13 @@ export class GenreService {
     return genres;
   }
 
-  async UpdateGenre(request: UpdateGenreRequest): Promise<CreateGenreResponse> {
+  async UpdateGenre(id:string ,request: UpdateGenreRequest): Promise<CreateGenreResponse> {
     this.logger.info(`Updating Genre ${JSON.stringify(request)}`);
     const CreateGenreRequest: CreateGenreRequest =
-      this.validationService.validate(GenreValidation.CREATE, request);
+      this.validationService.validate(GenreValidation.UPDATE, request);
 
     const genre = await this.prismaService.genre.update({
-      where: { id: CreateGenreRequest.title },
+      where: { id },
       data: CreateGenreRequest,
     });
 
@@ -71,17 +70,13 @@ export class GenreService {
     };
   }
 
-  async GetGenreById(request: GetGenreRequest): Promise<GetGenreResponse> {
-    const GetGenreRequest: GetGenreRequest = this.validationService.validate(
-      GenreValidation.GET,
-      request,
-    );
+  async GetGenreByQuery(request: string): Promise<GetGenreResponse> {
 
     const genre = await this.prismaService.genre.findFirst({
       where: {
         OR: [
-          { id: GetGenreRequest.id },
-          { title: { contains: GetGenreRequest.id } },
+          { id: request},
+          { title: { contains: request} },
         ]
       }
     });
@@ -107,7 +102,7 @@ export class GenreService {
   async ConnectGenre (request: ConnectGenreRequest):Promise<String>{
     this.logger.info(`Connecting Genre ${JSON.stringify(request)}`);
     const ConnectGenreRequest: ConnectGenreRequest = this.validationService.validate(GenreValidation.CONECTED, request);
-    const genre = await this.prismaService.genre.update({
+     await this.prismaService.genre.update({
       where: { id: ConnectGenreRequest.genreId },
         data:{
           bookId: ConnectGenreRequest.bookId

@@ -145,6 +145,7 @@ describe('BookController', () => {
   describe('DELETE /api/books/:id', () => {
     let bookId: string;
     let token: string;
+    
     beforeEach(async () => {
       const book = await testService.createBook();
       await testService.createUser();

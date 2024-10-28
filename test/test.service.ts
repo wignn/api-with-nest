@@ -42,7 +42,7 @@ export class TestService {
         cover: 'test',
       },
     });
-  return book.id;
+    return book.id;
   }
 
   async DeleteGenre() {
@@ -59,16 +59,20 @@ export class TestService {
         username: 'wignn',
       },
     });
-  
+
     if (!user) {
       throw new Error("User with username 'test' not found.");
     }
-  
-    return user.token
-  
+
+    return user.token;
   }
 
-
+  async createGenre() {
+    await this.PrismaService.genre.create({
+      data: {
+        title: 'test',
+        description: 'test',
+      },
+    });
   }
-  
-
+}

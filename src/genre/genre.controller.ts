@@ -2,13 +2,21 @@ import { Http } from 'winston/lib/winston/transports';
 import {
   ConnectGenreRequest,
   CreateGenreRequest,
-  GetGenreRequest,
   GetGenreResponse,
   UpdateGenreRequest,
   UpdateGenreResponse,
 } from '../model/genre.model';
 import { GenreService } from './genre.service';
-import { Body, Controller, Get, HttpCode, Param, Patch, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
 
 @Controller('/api/genre')
 export class GenreController {
@@ -32,19 +40,20 @@ export class GenreController {
 
   @Get(':query')
   @HttpCode(200)
-  async GetGenreById(
-    @Param('query') request: GetGenreRequest,
+  async GetGenrByQuery(
+    @Param('query') request: string,
   ): Promise<GetGenreResponse> {
-    const response = await this.GenreService.GetGenreById(request);
+    const response = await this.GenreService.GetGenreByQuery(request);
     return response;
   }
 
-  @Put()
+  @Put(':id')
   @HttpCode(200)
   async UpdateGenre(
+    @Param('id') id: string,
     @Body() request: UpdateGenreRequest,
   ): Promise<UpdateGenreResponse> {
-    const response = await this.GenreService.UpdateGenre(request);
+    const response = await this.GenreService.UpdateGenre(id, request);
     return response;
   }
 

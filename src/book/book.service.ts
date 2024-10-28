@@ -9,8 +9,6 @@ import { PrismaService } from '../common/prisma.service';
 import { ValidationService } from '../common/validate.service';
 import { Logger } from 'winston';
 import { BookValidation } from './book.validation';
-import { ZodError } from 'zod';
-import { error } from 'console';
 
 @Injectable()
 export class BookService {

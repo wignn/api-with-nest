@@ -29,7 +29,7 @@ export class BookController {
 
   @Get()
   async GetAll(
-    @Body() request: any
+    @Body() request
   ):Promise<WebResponse<any>> {
     const response = await this.bookService.getAll();
     return { data: response };

@@ -15,6 +15,14 @@ export class TestService {
   }
 
   async createUser() {
+
+    const validate = await this.PrismaService.user.findFirst({
+      where: {
+        username: 'test'}
+    });
+    if (validate) {
+      return validate;  
+    }
     const hashedPassword = await bcrypt.hash('test123', 10);
     await this.PrismaService.user.create({
       data: {
@@ -25,15 +33,20 @@ export class TestService {
       },
     });
   }
+  
 
-  async deletebook() {
-    await this.PrismaService.book.deleteMany({
+
+  async createBook() {
+
+    const validate = await this.PrismaService.book.findFirst({
       where: {
         title: 'test',
       },
     });
-  }
-  async createBook() {
+    if (validate) {
+      return validate;
+    }
+
     const book = await this.PrismaService.book.create({
       data: {
         title: 'test',
@@ -42,21 +55,60 @@ export class TestService {
         cover: 'test',
       },
     });
-    return book.id;
+    return book;
   }
 
-  async DeleteGenre() {
-    await this.PrismaService.genre.deleteMany({
+  async deletebook() {
+    const valid = await this.PrismaService.book.findFirst({
       where: {
         title: 'test',
       },
     });
+  
+    if (valid) {
+      await this.PrismaService.bookGenre.deleteMany({
+        where: {
+          bookId: valid.id,
+        },
+      });
+  
+      await this.PrismaService.book.deleteMany({
+        where: {
+          id: valid.id,
+        },
+      });
+
+    } 
   }
+  
+
+  async DeleteGenre() {
+    const valid = await this.PrismaService.genre.findFirst({
+      where: {
+        title: 'test',
+      },
+    });
+  
+    if (valid) {
+      await this.PrismaService.bookGenre.deleteMany({
+        where: {
+          genreId: valid.id,
+        },
+      });
+  
+      await this.PrismaService.genre.delete({
+        where: {
+          id: valid.id,
+        },
+      });
+    } 
+  }
+  
 
   async Token() {
     const user = await this.PrismaService.user.findUnique({
       where: {
-        username: 'wignn',
+        username: 'test',
       },
     });
 
@@ -64,15 +116,37 @@ export class TestService {
       throw new Error("User with username 'test' not found.");
     }
 
-    return user.token;
+    return user;
   }
 
   async createGenre() {
-    await this.PrismaService.genre.create({
+    const genre = await this.PrismaService.genre.create({
       data: {
         title: 'test',
         description: 'test',
       },
     });
+    return genre;
+  }
+
+  async login() {
+    const user = await this.PrismaService.user.findUnique({
+      where: {
+        username: 'test',
+      },
+    });
+    if (!user) {
+      throw new Error("User with username 'test' not found.");
+    }
+    await this.PrismaService.user.update({
+      where: {
+        username: 'test',
+      },
+      data: {
+        token: 'test',
+      },
+    });
+
+    return user;
   }
 }

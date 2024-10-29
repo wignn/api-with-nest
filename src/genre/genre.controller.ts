@@ -2,6 +2,7 @@ import { Http } from 'winston/lib/winston/transports';
 import {
   ConnectGenreRequest,
   CreateGenreRequest,
+  DisconnectGenreRequest,
   GetGenreResponse,
   UpdateGenreRequest,
   UpdateGenreResponse,
@@ -65,9 +66,10 @@ export class GenreController {
     return response;
   }
 
-  @Put(':id')
+  @Put()
   @HttpCode(200)
-  async DisconnectGenre(@Body() request: string): Promise<any> {
+  async DisconnectGenre(
+    @Body() request:DisconnectGenreRequest ): Promise<any> {
     const response = await this.GenreService.DisconnectGenre(request);
     return response
   }

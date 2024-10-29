@@ -48,7 +48,7 @@ model Book {
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  Genre       Genre[]
+  genre       BookGenre[]
   Chapter     Chapter[]
   bookMark    bookMark[]
 }
@@ -66,10 +66,17 @@ model Chapter {
 model Genre {
   id String @id @default(cuid())
   title String
-  bookId String?
   description String
-  Book Book? @relation(fields: [bookId], references: [id])
+  Book BookGenre[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+
+model BookGenre {
+  bookId  String
+  genreId String
+  Book    Book   @relation(fields: [bookId], references: [id])
+  Genre   Genre  @relation(fields: [genreId], references: [id])
+  @@id([bookId, genreId])
+}

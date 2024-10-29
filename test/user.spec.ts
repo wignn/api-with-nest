@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { TestService } from './test.service';
@@ -35,7 +35,11 @@ describe('UserController', () => {
       await testService.deleteUser();
     });
 
-    it('should be rejected with 400', async () => {
+    beforeEach(async () => {
+      await testService.deleteUser();
+    })
+    
+    it('should return 400 if required fields are empty', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/users/register')
         .send({
@@ -48,7 +52,7 @@ describe('UserController', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it('should be successful with 200', async () => {
+    it('should return 200 and create a new user with valid data', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/users/register')
         .send({
@@ -69,7 +73,11 @@ describe('UserController', () => {
       await testService.createUser();
     });
 
-    it('should be successful with 200', async () => {
+    afterEach(async () => {
+      await testService.deleteUser();
+    });
+
+    it('should return 200 and login user with valid credentials', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/users/login')
         .send({
@@ -84,7 +92,7 @@ describe('UserController', () => {
       expect(response.body.data).toBeDefined();
     });
 
-    it('should be rejected with 400', async () => {
+    it('should return 400 if credentials are invalid', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/users/login')
         .send({
@@ -106,10 +114,14 @@ describe('UserController', () => {
           username: 'test',
           password: 'test123',
         });
-      accessToken = loginResponse.body.data.backendTokens.accessToken;
+      accessToken = await loginResponse.body.data.backendTokens.accessToken;
     });
 
-    it('should be successful with 200', async () => {
+    afterEach(async () => {
+      await testService.deleteUser();
+    });
+
+    it('should return 200 and retrieve user data by ID', async () => {
       const response = await request(app.getHttpServer())
         .get(`/api/users/test`)
         .set('Authorization', `Bearer ${accessToken}`);
@@ -132,7 +144,11 @@ describe('UserController', () => {
       refreshToken = loginResponse.body.data.backendTokens.refreshToken;
     });
 
-    it('should refresh token successfully', async () => {
+    afterEach(async () => {
+      await testService.deleteUser();
+    });
+
+    it('should return 200 and refresh the token successfully', async () => {
       const response = await request(app.getHttpServer())
         .post('/api/users/refresh')
         .set('Authorization', `Refresh ${refreshToken}`);
@@ -145,7 +161,7 @@ describe('UserController', () => {
   describe('PATCH /api/users', () => {
     let accessToken: string;
     let userId: string;
-  
+
     beforeEach(async () => {
       await testService.createUser();
       const loginResponse = await request(app.getHttpServer())
@@ -154,32 +170,35 @@ describe('UserController', () => {
           username: 'test',
           password: 'test123',
         });
-  
-      accessToken = loginResponse.body.data.backendTokens.accessToken;
-      userId = loginResponse.body.data.id;
-  
+
+      accessToken = await loginResponse.body.data.backendTokens.accessToken;
+      userId = await loginResponse.body.data.id;
+
       if (!userId) {
         const userResponse = await request(app.getHttpServer())
           .get(`/api/users/profile`)
           .set('Authorization', `Bearer ${accessToken}`);
-  
+
         userId = userResponse.body.data.id;
       }
     });
-  
-    it('should update user successfully with 200', async () => {
+
+    afterEach(async () => {
+      await testService.deleteUser();
+    });
+
+    it('should return 200 and update user data successfully', async () => {
       const response = await request(app.getHttpServer())
         .patch('/api/users')
-        .set('Authorization', `Bearer ${accessToken}`)
+        .set('authorization', `Bearer ${accessToken}`)
         .send({
           id: userId,
           username: 'testUpdated',
           name: 'Updated',
         });
-  
+
       expect(response.status).toBe(200);
       expect(response.body.data).toBeDefined();
     });
   });
-  
 });

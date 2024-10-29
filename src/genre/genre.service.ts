@@ -2,6 +2,7 @@ import {
   ConnectGenreRequest,
   CreateGenreResponse,
   DeleteGenreRequest,
+  DisconnectGenreRequest,
   GetGenreResponse,
   UpdateGenreRequest,
 } from './../model/genre.model';
@@ -88,25 +89,29 @@ export class GenreService {
 
   async DeleteGenre(request: string): Promise<string> {
     this.logger.info(`Deleting Genre ${request}`);
-    const DeleteGenreRequest: DeleteGenreRequest =
-      this.validationService.validate(GenreValidation.DELETE, { id: request });
+    const DeleteGenreRequest: DeleteGenreRequest = this.validationService.validate(
+      GenreValidation.DELETE, 
+      { id: request }
+    );
+    await this.prismaService.bookGenre.deleteMany({
+      where: { genreId: DeleteGenreRequest.id },
+    });
     await this.prismaService.genre.delete({
       where: { id: DeleteGenreRequest.id },
     });
-
+  
     return 'Genre deleted';
   }
-
+  
   async ConnectGenre(request: ConnectGenreRequest): Promise<String> {
     console.log(request);
     this.logger.info(`Connecting Genre ${JSON.stringify(request)}`);
     const ConnectGenreRequest: ConnectGenreRequest =
       this.validationService.validate(GenreValidation.CONECTED, request);
-      console.log("ksajda"+ConnectGenreRequest.bookId);
-      console.log("ssssss"+ConnectGenreRequest.genreId);
-    await this.prismaService.genre.update({
-      where: { id: ConnectGenreRequest.genreId },
+
+    await this.prismaService.bookGenre.create({
       data: {
+        genreId: ConnectGenreRequest.genreId,
         bookId: ConnectGenreRequest.bookId,
       },
     });
@@ -115,15 +120,31 @@ export class GenreService {
   }
 
 
-  async DisconnectGenre(request: string): Promise<String> {
+  async DisconnectGenre(request: DisconnectGenreRequest): Promise<String> {
     this.logger.info(`Disconnecting Genre ${JSON.stringify(request)}`);
-    await this.prismaService.genre.update({
-      where: { id:  request},
-      data: {
-        bookId: null,
+
+    const existingRelation = await this.prismaService.bookGenre.findFirst({
+      where: {
+        bookId: request.bookId,
+        genreId: request.genreId,
       },
     });
 
+    if (!existingRelation) {
+      this.logger.warn(`Relation not found for bookId: ${request.bookId} and genreId: ${request.genreId}`);
+      return `No relation found for bookId: ${request.bookId} and genreId: ${request.genreId}`;
+    }
+
+    await this.prismaService.bookGenre.delete({
+      where: {
+        bookId_genreId: {
+          bookId: request.bookId,
+          genreId: request.genreId,
+        },
+      },
+    });
+  
     return 'Genre disconnected';
   }
+  
 }

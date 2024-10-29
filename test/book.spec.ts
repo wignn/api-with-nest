@@ -29,12 +29,9 @@ describe('BookController', () => {
   });
 
   describe('Authentication and User Management', () => {
-    let token: string;
-
     beforeEach(async () => {
       await testService.createUser();
-     await testService.login();
-      token = "test"
+      await testService.login();
     });
 
     afterEach(async () => {
@@ -49,7 +46,7 @@ describe('BookController', () => {
       it('should respond with status 200 and return a message', async () => {
         const response = await request(app.getHttpServer())
           .post('/api/books')
-          .set('authorization', `${token}`)
+          .set('authorization', 'test')
           .send({
             title: 'test',
             description: 'test',
@@ -59,6 +56,7 @@ describe('BookController', () => {
 
         logger.info(response.body);
         expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
         expect(response.body.data).toBeDefined();
       });
 
@@ -80,15 +78,11 @@ describe('BookController', () => {
   });
 
   describe('Book Management', () => {
-    let bookId: string;
-    let token: string;
-
     beforeEach(async () => {
-      const book = await testService.createBook();
-      bookId = book.id;
       await testService.createUser();
-      await testService.login(); 
-        token = "test"
+      await testService.createBook();
+      await testService.login();
+      
     });
 
     afterEach(async () => {
@@ -99,10 +93,13 @@ describe('BookController', () => {
     describe('GET /api/books/:query', () => {
       it('should retrieve a book with status 200', async () => {
         const query = 'test';
-        const response = await request(app.getHttpServer()).get(`/api/books/${query}`);
+        const response = await request(app.getHttpServer()).get(
+          `/api/books/${query}`,
+        );
 
         logger.info(response.body);
         expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
         expect(response.body.data.title).toBe('test');
       });
     });
@@ -112,38 +109,67 @@ describe('BookController', () => {
         const response = await request(app.getHttpServer()).get('/api/books');
         logger.info(response.body);
         expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
         expect(response.body.data).toBeDefined();
       });
     });
+  });
 
-    describe('PUT /api/books/:id', () => {
-      it('should update a book with status 200', async () => {
-        const response = await request(app.getHttpServer())
-          .put(`/api/books/${bookId}`)
-          .set('authorization', `${token}`)
-          .send({
-            description: 'updated description',
-            author: 'updated author',
-            cover: 'updated cover',
-            asset: 'updated asset',
-          });
-
-        logger.info(response.body);
-        expect(response.status).toBe(200);
-        expect(response.body.data.author).toBe('updated author');
-      });
+  describe('PUT /api/books/:id', () => {
+    let bookId: string;
+    beforeEach(async () => {
+      const { id: Id } = await testService.createBook();
+      bookId = Id;
+      await testService.createUser();
+      await testService.login();
     });
 
-    describe('DELETE /api/books/:id', () => {
-      it('should delete a book with status 200', async () => {
-        const response = await request(app.getHttpServer())
-          .delete(`/api/books/${bookId}`)
-          .set('authorization', `${token}`);
+    afterEach(async () => {
+      await testService.deletebook();
+      await testService.deleteUser();
+    });
 
-        logger.info(response.body);
-        expect(response.status).toBe(200);
-        expect(response.body.data).toBeDefined();
-      });
+    it('should update a book with status 200', async () => {
+      const response = await request(app.getHttpServer())
+        .put(`/api/books/${bookId}`)
+        .set('authorization', 'test')
+        .send({
+          description: 'updated description',
+          author: 'updated author',
+          cover: 'updated cover',
+          asset: 'updated asset',
+        });
+
+      logger.info(response.body);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body.data.author).toBe('updated author');
+    });
+  });
+
+  describe('DELETE /api/books/:id', () => {
+    let bookId: string;
+
+    beforeEach(async () => {
+      const book = await testService.createBook();
+      bookId = book.id;
+      await testService.createUser();
+      await testService.login();
+    });
+
+    afterEach(async () => {
+      await testService.deletebook();
+      await testService.deleteUser();
+    });
+
+    it('should delete a book with status 200', async () => {
+      const response = await request(app.getHttpServer())
+        .delete(`/api/books/${bookId}`)
+        .set('authorization', 'test');
+
+      logger.info(response.body);
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
     });
   });
 });

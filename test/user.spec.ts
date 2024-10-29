@@ -11,8 +11,7 @@ describe('UserController', () => {
   let app: INestApplication;
   let logger: Logger;
   let testService: TestService;
-  let accessToken: string;
-  let refreshToken: string;
+
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -69,6 +68,8 @@ describe('UserController', () => {
   });
 
   describe('POST /api/users/login', () => {
+    let accessToken: string;
+    let refreshToken: string;
     beforeEach(async () => {
       await testService.createUser();
     });
@@ -106,6 +107,8 @@ describe('UserController', () => {
   });
 
   describe('GET /api/users/:id', () => {
+    let accessToken: string;
+
     beforeEach(async () => {
       await testService.createUser();
       const loginResponse = await request(app.getHttpServer())
@@ -133,6 +136,7 @@ describe('UserController', () => {
   });
 
   describe('POST /api/users/refresh', () => {
+    let refreshToken: string;
     beforeEach(async () => {
       await testService.createUser();
       const loginResponse = await request(app.getHttpServer())
@@ -171,8 +175,8 @@ describe('UserController', () => {
           password: 'test123',
         });
 
-      accessToken = await loginResponse.body.data.backendTokens.accessToken;
-      userId = await loginResponse.body.data.id;
+      accessToken =  loginResponse.body.data.backendTokens.accessToken;
+      userId =  loginResponse.body.data.id;
 
       if (!userId) {
         const userResponse = await request(app.getHttpServer())

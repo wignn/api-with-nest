@@ -1,5 +1,5 @@
 import { PrismaService } from '../src/common/prisma.service';
-import { Injectable, Delete } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -15,13 +15,14 @@ export class TestService {
   }
 
   async createUser() {
-
     const validate = await this.PrismaService.user.findFirst({
       where: {
-        username: 'test'}
+        username: 'test',
+      },
     });
+
     if (validate) {
-      return validate;  
+      return validate;
     }
     const hashedPassword = await bcrypt.hash('test123', 10);
     await this.PrismaService.user.create({
@@ -33,11 +34,8 @@ export class TestService {
       },
     });
   }
-  
-
 
   async createBook() {
-
     const validate = await this.PrismaService.book.findFirst({
       where: {
         title: 'test',
@@ -64,23 +62,21 @@ export class TestService {
         title: 'test',
       },
     });
-  
+
     if (valid) {
       await this.PrismaService.bookGenre.deleteMany({
         where: {
           bookId: valid.id,
         },
       });
-  
+
       await this.PrismaService.book.deleteMany({
         where: {
           id: valid.id,
         },
       });
-
-    } 
+    }
   }
-  
 
   async DeleteGenre() {
     const valid = await this.PrismaService.genre.findFirst({
@@ -88,22 +84,21 @@ export class TestService {
         title: 'test',
       },
     });
-  
+
     if (valid) {
       await this.PrismaService.bookGenre.deleteMany({
         where: {
           genreId: valid.id,
         },
       });
-  
+
       await this.PrismaService.genre.delete({
         where: {
           id: valid.id,
         },
       });
-    } 
+    }
   }
-  
 
   async Token() {
     const user = await this.PrismaService.user.findUnique({
@@ -135,9 +130,11 @@ export class TestService {
         username: 'test',
       },
     });
+
     if (!user) {
-      throw new Error("User with username 'test' not found.");
+      await this.createUser();
     }
+
     await this.PrismaService.user.update({
       where: {
         username: 'test',
@@ -147,6 +144,6 @@ export class TestService {
       },
     });
 
-    return user;
+    return 'test';
   }
 }

@@ -6,6 +6,7 @@ import { userModule } from './user/user.module';
 import { MailerModule } from './mailer/mailer.module';
 import { bookModule } from './book/book.module';
 import { GenreModule } from './genre/genre.module';
+import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GenreModule } from './genre/genre.module';
     userModule,
     bookModule,
     GenreModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService],

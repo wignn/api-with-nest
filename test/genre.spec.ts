@@ -7,7 +7,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { TestService } from './test.service';
 import { TestModule } from './test.module';
 
-describe('bookController', () => {
+describe('genreController', () => {
   let app: INestApplication;
   let logger: Logger;
   let testService: TestService;
@@ -22,6 +22,7 @@ describe('bookController', () => {
 
     testService = app.get(TestService);
     logger = app.get(WINSTON_MODULE_PROVIDER);
+    await testService.DeleteGenre();
   });
 
   afterEach(async () => {
@@ -43,7 +44,7 @@ describe('bookController', () => {
 
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
 
     it('should fail with status 400', async () => {
@@ -55,7 +56,7 @@ describe('bookController', () => {
 
       logger.info(response.body);
       expect(response.status).toBe(400);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
   });
 
@@ -72,7 +73,7 @@ describe('bookController', () => {
       const response = await request(app.getHttpServer()).get('/api/genre');
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
 
     it('should be successful with status 200', async () => {
@@ -82,7 +83,7 @@ describe('bookController', () => {
       );
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
   });
 
@@ -106,7 +107,7 @@ describe('bookController', () => {
 
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
 
     it('should fail with status 400', async () => {
@@ -118,7 +119,7 @@ describe('bookController', () => {
 
       logger.info(response.body);
       expect(response.status).toBe(400);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
   });
 
@@ -139,14 +140,14 @@ describe('bookController', () => {
       );
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
 
     it('should not found with status 404', async () => {
       const response = await request(app.getHttpServer()).delete(`/api/genre`);
       logger.info(response.body);
       expect(response.status).toBe(404);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
   });
 
@@ -173,7 +174,7 @@ describe('bookController', () => {
 
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
 
     it('should disconnect genre with book', async () => {
@@ -186,7 +187,7 @@ describe('bookController', () => {
 
       logger.info(response.body);
       expect(response.status).toBe(200);
-      expect(response.body.message).toBeDefined;
+      expect(response.body).toBeDefined();
     });
 
     afterEach(async () => {

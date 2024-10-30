@@ -7,6 +7,6 @@ export class BookmarkController {
     
     @Post()
     async createBookmark() {
-        return await this.bookmarkService.createBookmark();
+        
     }
 }

@@ -16,7 +16,8 @@ export class DeleteBookmarkRequest {
 }
 
 export class GetBookmarkRequest {
-    id: string;
+    userid: string;
+    bookid: string;
 }
 
 export class GetBookmarkResponse {

@@ -29,15 +29,6 @@ model User {
   Book       bookMark[]
 }
 
-model bookMark {
-  id        String   @id @default(cuid())
-  userId    String
-  bookId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
-  Book      Book     @relation(fields: [bookId], references: [id])
-}
 
 model Book {
   asset       String?
@@ -80,3 +71,15 @@ model BookGenre {
   Genre   Genre  @relation(fields: [genreId], references: [id])
   @@id([bookId, genreId])
 }
+
+model bookMark {
+  id        String   @id @default(cuid())
+  userId    String
+  bookId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Book      Book     @relation(fields: [bookId], references: [id])
+
+}
+

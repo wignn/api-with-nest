@@ -6,7 +6,9 @@ export class CreateBookmarkRequest {
     userId: z.string().min(3),
   });
 
-    static readonly DELETE: ZodType = z.object({
-        id: z.string().min(3),
-    });
+  static readonly DELETE: ZodType = z.object({
+    id: z.string().min(3),
+  });
+
+  
 }

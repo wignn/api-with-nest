@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -26,7 +27,7 @@ import { RefreshJwtGuard } from './guards/refresh.guard';
 @Controller('/api/users')
 export class UserController {
   constructor(private UserService: UserService) {}
-  @Post('/register')
+  @Post()
   @HttpCode(200)
   async register(
     @Body() request: RegisterUserRequest,
@@ -37,7 +38,7 @@ export class UserController {
     };
   }
 
-  @Post('/login')
+  @Patch('login')
   @HttpCode(200)
   async login(
     @Body() request: LoginUserRequest,
@@ -49,7 +50,7 @@ export class UserController {
   }
 
   @UseGuards(JwtGuard)
-  @Get(':query')
+  @Get('current/:query')
   @HttpCode(200)
   async getUser(@Param('query') id: string): Promise<WebResponse<UserResponse>> {
     const result = await this.UserService.findByid(id);
@@ -69,7 +70,10 @@ export class UserController {
     };
   }
 
-  @Put()
+  
+  
+  @UseGuards(JwtGuard)
+  @Put('current')
   @HttpCode(200)
   async resetPassword(
     @Body() request: ResetRequest,
@@ -80,12 +84,24 @@ export class UserController {
     };
   }
 
-  @Patch()
+  @Patch('current')
   @HttpCode(200)
   async updateUser(
     @Body() request: UpdateUserRequest,
   ): Promise<WebResponse<UpdateUserRespone>> {
     const result = await this.UserService.update(request);
+    return {
+      data: result,
+    };
+  }
+
+ 
+
+  @Delete('current')
+  @HttpCode(200)
+  async deleteUser(
+    @Body() request): Promise<WebResponse<boolean>> {
+    const result = await this.UserService.logout(request);
     return {
       data: result,
     };

@@ -24,7 +24,7 @@ export class UserValidation {
     static readonly RESET : ZodType = z.object({
         email: z.string().min(3).max(100),
         password: z.string().min(6).max(100),
-        valToken: z.string().min(6)
+        valToken: z.string().min(2)
     })
 
     static readonly UPDATE : ZodType = z.object({
@@ -32,5 +32,9 @@ export class UserValidation {
         name: z.string().min(3).max(100).optional(),
         profilePic: z.string().optional(),
         bio: z.string().optional(),
+    })
+
+    static readonly LOGOUT : ZodType = z.object({
+        username: z.string().min(3).max(100),
     })
 }

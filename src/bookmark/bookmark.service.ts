@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { PrismaService } from 'src/common/prisma.service';
-import { ValidationService } from 'src/common/validate.service';
+import { PrismaService } from '../common/prisma.service';
+import { ValidationService } from '../common/validate.service';
 import { Logger } from 'winston';
 import { CreateBookmarkRequest } from './book.validation';
 import {
@@ -53,15 +53,25 @@ export class BookmarkService {
   }
 
   async getBookmark(request: GetBookmarkRequest): Promise<any> {
-    this.logger.info(`Getting bookmark ${request}`);
+    this.logger.info(`Getting bookmark for user: ${request.userid}, book: ${request.bookid}`);
+    let bookmark: any;
 
-    const bookmark = await this.prismaService.bookMark.findMany({
-      where: {
-        bookId: request.bookid,
-        userId: request.userid,
-      },
-    });
+    if (!request.bookid) {
+      bookmark = await this.prismaService.bookMark.findMany({
+        where: {
+          userId: request.userid,
+        },
+      });
+    } else {
+      bookmark = await this.prismaService.bookMark.findMany({
+        where: {
+          bookId: request.bookid,
+          userId: request.userid,
+        },
+      });
+    }
 
     return bookmark;
   }
+
 }

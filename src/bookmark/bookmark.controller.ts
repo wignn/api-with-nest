@@ -1,9 +1,9 @@
 import { BookmarkService } from './bookmark.service';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { CreateBookmarkRequest } from './book.validation';
-import { CreateBookmarkResponse } from 'src/model/bookmark.model';
+import { CreateBookmarkResponse } from '../model/bookmark.model';
 
-@Controller('bookmark')
+@Controller('/api/bookmark')
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
 
@@ -17,6 +17,21 @@ export class BookmarkController {
   }
 
   
+  @Delete()
+  async deleteBookmark(@Body() request: string): Promise<string> {
+    const respone = await this.bookmarkService.deleteBookmark(request);
+    return respone;
+  }
+
+  @Get(':bookid/:userid')
+  async getBookmark(
+    @Param('bookid') bookid: string,
+    @Param('userid') userid: string
+  ): Promise<any> {
+    const response = await this.bookmarkService.getBookmark({ bookid, userid });
+    return response;
+  }
+
 }
 
 

@@ -7,6 +7,7 @@ import {
   UpdateUserRequest,
   UpdateUserRespone,
   UserGetResponse,
+  logoutRequest,
 } from './../model/user.model';
 import { PrismaService } from '../common/prisma.service';
 import { HttpException, Inject, Injectable } from '@nestjs/common';
@@ -15,7 +16,6 @@ import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { UserValidation } from './user.validation';
 import * as bcrypt from 'bcrypt';
-import { error } from 'console';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -169,6 +169,7 @@ export class UserService {
 
   async resetPassword(request: ResetRequest): Promise<string> {
     this.logger.info(`reset password user ${JSON.stringify(request)}`);
+ 
     const resetUser: ResetRequest = this.validationService.validate(
       UserValidation.RESET,
       request,
@@ -196,7 +197,10 @@ export class UserService {
 
     await this.prismaService.user.update({
       where: { email: resetUser.email },
-      data: resetUser,
+      data: {
+        password:resetUser.password,
+        valToken: null,
+      },
     });
 
     return 'reset successful';
@@ -238,5 +242,27 @@ export class UserService {
     });
 
     return user;
+  }
+
+  async logout(request:logoutRequest ): Promise<boolean> {
+
+    if (!request.username) {
+      throw new HttpException('User not found', 404);
+    }
+    const logoutUser: logoutRequest = this.validationService.validate(
+      UserValidation.LOGOUT,
+      request,
+    )
+
+    const result = await this.prismaService.user.update({
+      where: {
+        username: logoutUser.username,
+      },
+      data: {
+        token: null,
+      },
+    });
+
+    return true
   }
 }

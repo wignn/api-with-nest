@@ -1,7 +1,7 @@
 import { PrismaService } from '../src/common/prisma.service';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
+import { Book, User } from '@prisma/client';
 
 @Injectable()
 export class TestService {
@@ -9,6 +9,7 @@ export class TestService {
 
   async deleteAll() {
     await this.deleteUser();
+    await this.deleteBook();
   }
 
   async deleteUser() {
@@ -19,7 +20,6 @@ export class TestService {
     });
   }
 
-
   async getUser(): Promise<User> {
     return this.prismaService.user.findUnique({
       where: {
@@ -29,8 +29,18 @@ export class TestService {
   }
 
   async createUser() {
-    await this.prismaService.user.create({
+
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        username: 'test',}
+    })
+
+    if (user) {
+      return;
+    }
+ await this.prismaService.user.create({
       data: {
+        id: 'test',
         username: 'test',
         name: 'test',
         email: 'test@gmail.com',
@@ -41,5 +51,31 @@ export class TestService {
     });
   }
 
+  async createBook() {
+    await this.prismaService.book.create({
+      data: {
+        id: 'test',
+        title: 'test',
+        description: 'test',
+        author: 'test',
+        cover: 'test',
+      },
+    });
+  }
 
+  async deleteBook() {
+    await this.prismaService.book.deleteMany({
+      where: {
+        title: 'test',
+      },
+    });
+  }
+
+  async getBook(): Promise<Book> {
+    return this.prismaService.book.findFirst({
+      where: {
+        title: 'test',
+      },
+    });
+  }
 }

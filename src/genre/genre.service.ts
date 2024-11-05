@@ -20,7 +20,7 @@ export class GenreService {
     private validationService: ValidationService,
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
     private prismaService: PrismaService,
-  ) {}
+  ) { }
 
   async CreateGenre(request: CreateGenreRequest): Promise<CreateGenreResponse> {
     this.logger.info(`Creating Genre ${JSON.stringify(request)}`);
@@ -77,7 +77,8 @@ export class GenreService {
   async GetGenreByQuery(request: string): Promise<GetGenreResponse> {
     const genre = await this.prismaService.genre.findFirst({
       where: {
-        OR: [{ id: request }, { title: { contains: request } }],
+        OR: [{ id: request },
+        { title: { contains: request } }],
       },
     });
     return {
@@ -90,7 +91,7 @@ export class GenreService {
   async DeleteGenre(request: string): Promise<string> {
     this.logger.info(`Deleting Genre ${request}`);
     const DeleteGenreRequest: DeleteGenreRequest = this.validationService.validate(
-      GenreValidation.DELETE, 
+      GenreValidation.DELETE,
       { id: request }
     );
     await this.prismaService.bookGenre.deleteMany({
@@ -99,10 +100,10 @@ export class GenreService {
     await this.prismaService.genre.delete({
       where: { id: DeleteGenreRequest.id },
     });
-  
+
     return 'Genre deleted';
   }
-  
+
   async ConnectGenre(request: ConnectGenreRequest): Promise<String> {
     console.log(request);
     this.logger.info(`Connecting Genre ${JSON.stringify(request)}`);
@@ -143,8 +144,8 @@ export class GenreService {
         },
       },
     });
-  
+
     return 'Genre disconnected';
   }
-  
+
 }

@@ -23,6 +23,11 @@ describe('UserController', () => {
     logger = app.get(WINSTON_MODULE_PROVIDER);
     testService = app.get(TestService);
   });
+  afterAll(async () => {
+    await app.close(); 
+  });
+
+  
 
   describe('POST /api/users', () => {
     beforeEach(async () => {
@@ -56,7 +61,6 @@ describe('UserController', () => {
         });
 
       logger.info(response.body);
-
       expect(response.status).toBe(200);
       expect(response.body.data.username).toBe('test');
       expect(response.body.data.name).toBe('test');
@@ -243,5 +247,7 @@ describe('UserController', () => {
       const user = await testService.getUser();
       expect(user.token).toBeNull();
     });
+
+    
   });
 });

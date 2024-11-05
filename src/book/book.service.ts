@@ -17,7 +17,7 @@ export class BookService {
     @Inject(WINSTON_MODULE_PROVIDER)
     private logger: Logger,
     private prismaService: PrismaService,
-  ) {}
+  ) { }
 
   async registerBook(request: CreateBookRequest): Promise<CreateBookResponse> {
     this.logger.info(`Registering book ${JSON.stringify(request)}`);
@@ -30,7 +30,7 @@ export class BookService {
     });
 
     if (totalBookWithSameTitle !== 0) {
-      throw new HttpException('Book already exists', 400);    
+      throw new HttpException('Book already exists', 400);
     }
 
     const book = await this.prismaService.book.create({
@@ -65,7 +65,8 @@ export class BookService {
           { author: { contains: request } },
         ],
       },
-      include: { Chapter: true },
+
+      include: { Chapter: true, genre: true },
     });
 
     if (!book) {
